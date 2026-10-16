@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gift For Her</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&family=Quicksand:wght@400;500;700&family=Cairo:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--red:#e0203f;--ink:#2b2b2b;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);color-scheme:light}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+button{touch-action:manipulation;font-family:inherit}
+html,body{height:100%;overflow:hidden;font-family:Quicksand,system-ui,sans-serif;color:var(--ink)}
+#scene{position:fixed;inset:0;overflow:hidden;
+ background:radial-gradient(ellipse at 85% 10%,#ffc9d8 0,transparent 45%),radial-gradient(ellipse at 10% 0,#fff 0,transparent 40%),linear-gradient(180deg,#fff5f7 0,#ffe6e6 55%,#fdd9c6 100%)}
+.paused *{animation-play-state:paused!important}
+.tool{position:absolute;top:calc(var(--safe-t) + 12px);width:34px;height:34px;border:0;border-radius:50%;background:#e8244a;color:#fff;display:grid;place-items:center;cursor:pointer;z-index:5;box-shadow:0 2px 8px #e8244a55;transition:transform .2s}
+.tool:hover{transform:scale(1.1)}.tool svg{width:16px;height:16px}
+#fs{left:12px}#pz{right:12px}
+button:focus-visible{outline:3px solid #fff;outline-offset:2px;box-shadow:0 0 0 5px var(--red)}
+.petal{position:absolute;top:-30px;color:#ffb3c6;opacity:.55;animation:fall linear infinite;pointer-events:none}
+@keyframes fall{to{transform:translate(40px,115vh) rotate(360deg)}}
+/* start */
+.start{position:absolute;inset:0;width:100%;height:100%;background:none;border:0;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:var(--red);font:500 12px Quicksand;transition:opacity .5s;z-index:2}
+.start svg{width:34px;height:31px;animation:beat 1.2s infinite}
+.start span{border-bottom:1.5px solid var(--red);padding-bottom:2px}
+.burst .start{opacity:0;pointer-events:none}
+@keyframes beat{50%{transform:scale(1.18)}}
+.iloveyou{position:absolute;left:50%;top:38%;transform:translateX(-50%);font:500 22px 'Dancing Script',cursive;opacity:0;transition:opacity 1s .3s;color:#555}
+.burst .iloveyou{opacity:1}.grow .iloveyou{opacity:0;transition-delay:0s}
+.mini{position:absolute;left:50%;top:50%;width:14px;height:13px;animation:rise 1.8s ease-out forwards}
+@keyframes rise{from{transform:translate(0,0) scale(.4);opacity:1}to{transform:translate(var(--x),var(--y)) scale(1);opacity:0}}
+/* ground + tree */
+.ground{position:absolute;left:50%;bottom:calc(12vh + var(--safe-b));height:3px;width:0;max-width:94vw;transform:translateX(-50%);background:#111;border-radius:2px;transition:width 1.4s cubic-bezier(.3,.7,.3,1)}
+.burst .ground{width:min(900px,88vw)}
+.tree{position:absolute;bottom:calc(12vh + var(--safe-b));left:50%;width:min(540px,94vw,62vh);aspect-ratio:400/420;transform:translateX(-50%);transition:left 1.6s cubic-bezier(.6,0,.2,1)}
+.done .tree{left:72%}
+.tree svg,.tree canvas{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.trunk{fill:#8a4513;transform-origin:200px 420px;transform:scaleY(0)}
+.grow .trunk{transform:scaleY(1);transition:transform 1.8s cubic-bezier(.3,.7,.3,1)}
+.br{fill:none;stroke:#8a4513;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1}
+.grow .br{stroke-dashoffset:0;transition:stroke-dashoffset 1.3s ease var(--d)}
+/* info */
+.info{position:absolute;left:8vw;top:50%;transform:translateY(-45%);display:flex;flex-direction:column;align-items:center;gap:26px;opacity:0;pointer-events:none;transition:opacity 1.2s .6s}
+.done .info{opacity:1;pointer-events:auto}
+.letter{position:relative;width:86px;height:78px;background:none;border:0;cursor:pointer;color:var(--red);filter:drop-shadow(0 6px 8px #e0203f55);animation:beat 1.6s infinite}
+.letter svg{width:100%;height:100%}.letter b{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font:700 13px Quicksand;padding-bottom:6px}
+.counter{text-align:center;font-size:13px;color:#555}
+.counter p{margin-bottom:6px}.counter b{font-size:26px;color:#222;font-weight:700;margin-left:6px}.counter small{font-size:11px;margin-left:2px}
+/* modal */
+.modal{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:#0008;backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .4s}
+.modal.open{opacity:1;pointer-events:auto}
+.panel{position:relative;width:min(1000px,94vw);height:min(560px,86vh);height:min(560px,86dvh);border-radius:22px;background:linear-gradient(180deg,#fff0ee,#ffc9bf);display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:10px;padding:28px;transform:scale(.94);transition:transform .4s}
+.open .panel{transform:none}
+.x{position:absolute;top:12px;right:12px;width:28px;height:28px;border:0;border-radius:50%;background:#e8244a;color:#fff;font:700 16px/1 Quicksand;cursor:pointer}
+.note{background:#fff8;border-radius:10px;padding:18px;font-family:Cairo,Quicksand,sans-serif;font-size:15px;line-height:1.9;white-space:pre-wrap;min-height:260px;align-self:start;margin-top:14px}
+.caret{display:inline-block;width:6px;height:1em;background:#222;vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.stage{perspective:800px;height:200px;display:grid;place-items:center;cursor:pointer}
+.ring{position:relative;width:113px;height:170px;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.4,0,.2,1)}
+.card{position:absolute;inset:0;border-radius:10px;overflow:hidden;backface-visibility:hidden;box-shadow:0 6px 14px #0003;background:#fff}
+.card svg{width:100%;height:100%;display:block}
+@media(max-width:700px){
+ .info{left:0;right:0;top:calc(var(--safe-t) + 64px);transform:none;gap:14px}
+ .done .tree{left:50%}.letter{width:70px;height:64px}.counter b{font-size:22px}
+ .tool{width:42px;height:42px}.tool svg{width:18px;height:18px}.start{font-size:15px;gap:8px}.start svg{width:46px;height:42px}.x{width:38px;height:38px;font-size:20px}
+ .panel{grid-template-columns:1fr;grid-template-rows:auto 1fr;padding:18px;overflow:auto}
+ .note{font-size:13px;min-height:0;margin-top:22px}.stage{height:190px}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="h" viewBox="0 0 32 29"><path fill="currentColor" d="M16 28S1 18 1 9a7.5 7.5 0 0 1 15-2 7.5 7.5 0 0 1 15 2c0 9-15 19-15 19z"/></symbol></svg>
+
+<main id="scene">
+ <button class="tool" id="fs" aria-label="Toggle fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+ <button class="tool" id="pz" aria-label="Pause animations" aria-pressed="false"><svg id="pzi" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></button>
+ <div id="petals" aria-hidden="true"></div>
+ <button class="start" id="start"><svg><use href="#h"/></svg><span>Click me, love</span></button>
+ <div class="iloveyou" aria-hidden="true">I love you</div>
+ <div id="minis" aria-hidden="true"></div>
+ <div class="ground"></div>
+ <div class="tree" aria-hidden="true">
+  <svg viewBox="0 0 400 420">
+   <path class="trunk" d="M178 420C186 360 192 300 194 235L207 235C209 300 215 360 224 420Z"/>
+   <path class="br" pathLength="1" style="--d:.9s" stroke-width="7" d="M198 300C170 285 150 255 118 232"/>
+   <path class="br" pathLength="1" style="--d:1s" stroke-width="7" d="M204 285C238 265 258 238 284 205"/>
+   <path class="br" pathLength="1" style="--d:1.2s" stroke-width="6" d="M198 255C185 225 172 190 160 150"/>
+   <path class="br" pathLength="1" style="--d:1.3s" stroke-width="6" d="M204 245C217 215 230 182 248 140"/>
+   <path class="br" pathLength="1" style="--d:1.4s" stroke-width="6" d="M200 240C200 200 200 160 198 105"/>
+   <path class="br" pathLength="1" style="--d:.8s" stroke-width="8" d="M196 340C170 328 150 312 132 288"/>
+   <path class="br" pathLength="1" style="--d:.85s" stroke-width="8" d="M206 332C232 320 252 302 270 278"/>
+  </svg>
+  <canvas id="leaves"></canvas>
+ </div>
+ <section class="info">
+  <button class="letter" id="letter" aria-haspopup="dialog"><svg><use href="#h"/></svg><b>Letter</b></button>
+  <div class="counter"><p>Our time together…</p><span id="cnt"></span></div>
+ </section>
+</main>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="A letter for you" aria-hidden="true">
+ <div class="panel">
+  <button class="x" id="close" aria-label="Close letter">×</button>
+  <div class="note" id="note" dir="rtl" lang="ar"><span id="typed"></span><span class="caret"></span></div>
+  <div class="stage" id="stage" aria-label="Photo carousel, click to advance"><div class="ring" id="ring"></div></div>
+ </div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s), scene=$('#scene');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches, K=RM?.15:1;
+// Edit these two to personalise
+const START_DATE=new Date('2022-08-05T00:00:00');
+const LETTER=`أعتذر إليك
+إن بدا لكِ شيءٌ
+عكس ما يرادوني دومًا
+وشيء يعكس لك افعالي وتصرفاتي حتى أنا احبك
+وان الروح للروح تميل ..
+أني أحبك لكنها الحياة
+متعبة كثيراَ
+وتضطرنا لإظهار غير الذي فينا دون أن نشعر لكن الشيء الوحيد
+الصادق
+أنك الحقيقة الوحيدة في حياتي
+وأن حبي لا يسعةٌ هذا الكون الصغير
+ولكني والله
+أنا دائمًا أحبك يا لوزتي`;
+let paused=false;
+
+// ambient petals
+const P=$('#petals');
+for(let i=0;i<9;i++){const s=document.createElementNS('http://www.w3.org/2000/svg','svg');const w=14+Math.random()*14;
+ s.setAttribute('class','petal');s.setAttribute('width',w);s.setAttribute('height',w*.9);
+ s.style.cssText=`left:${Math.random()*95}%;animation-duration:${9+Math.random()*8}s;animation-delay:-${Math.random()*14}s`;
+ s.innerHTML='<use href="#h"/>';P.appendChild(s)}
+
+// intro sequence
+$('#start').onclick=()=>{
+ scene.classList.add('burst');
+ const M=$('#minis');
+ for(let i=0;i<8;i++){const a=i/8*Math.PI*2,d=Math.random()*20+34;const s=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  s.setAttribute('class','mini');s.style.cssText=`--x:${Math.cos(a)*d}px;--y:${Math.sin(a)*d-30}px;color:${['#e8244a','#ff8c42','#ff5c8a'][i%3]};animation-delay:${i*40}ms`;
+  s.innerHTML='<use href="#h"/>';M.appendChild(s)}
+ setTimeout(()=>scene.classList.add('grow'),1800*K);
+ setTimeout(()=>{scene.classList.add('bloom');bloom()},3600*K);
+ setTimeout(()=>scene.classList.add('done'),8200*K);
+};
+
+// canvas heart tree
+const cv=$('#leaves'),ctx=cv.getContext('2d');
+const COLS=['#e8173f','#ff3d7f','#ff6fa8','#ff8f3c','#ffc324','#ffe14d','#f0409a','#ff5a4f','#ff9ec4'];
+let leaves=[],fall=[],vt=0,last=0,running=false,T0=0,nextFall=0;
+function fit(){const r=cv.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);cv.width=r.width*d;cv.height=r.height*d;ctx.setTransform(cv.width/400,0,0,cv.height/420,0,0)}
+addEventListener('resize',fit);
+function heart(x,y,s,r,c,a=1){ctx.save();ctx.translate(x,y);ctx.rotate(r);ctx.scale(s,s);ctx.globalAlpha=a;ctx.fillStyle=c;ctx.beginPath();
+ ctx.moveTo(0,.55);ctx.bezierCurveTo(-1,-.1,-.5,-.85,0,-.35);ctx.bezierCurveTo(.5,-.85,1,-.1,0,.55);ctx.fill();ctx.restore()}
+function bloom(){
+ fit();
+ while(leaves.length<430){const x=Math.random()*2.6-1.3,y=Math.random()*2.5-1.15;
+  if(Math.pow(x*x+y*y-1,3)-x*x*y*y*y>0)continue;
+  leaves.push({x:200+x*118,y:172-y*104,s:8+Math.random()*9,r:Math.random()*6.28,c:COLS[Math.random()*COLS.length|0],ph:Math.random()*6.28,
+   d:((y+1.15)/2.5)*2200*K+Math.random()*700*K})}
+ T0=vt;running=true;requestAnimationFrame(loop)}
+function loop(now){
+ const dt=Math.min(now-last,50);last=now;if(!paused)vt+=dt;
+ ctx.clearRect(0,0,400,420);const t=vt-T0;
+ for(const l of leaves){const p=Math.min(Math.max((t-l.d)/700,0),1);if(!p)continue;const e=1-Math.pow(1-p,3);
+  heart(l.x+Math.sin(vt/1200+l.ph)*1.3,l.y,l.s*e,l.r+Math.sin(vt/900+l.ph)*.12,l.c)}
+ if(!paused&&t>3500*K&&vt>nextFall){nextFall=vt+650;const l=leaves[Math.random()*leaves.length|0];fall.push({x:l.x,y:l.y,s:l.s,c:l.c,r:l.r,vx:Math.random()*.5-.1,vy:.5+Math.random()*.5})}
+ for(let i=fall.length-1;i>=0;i--){const f=fall[i];if(!paused){f.x+=f.vx+Math.sin(vt/300+i)*.25;f.y+=f.vy;f.r+=.03}
+  heart(f.x,f.y,f.s*.8,f.r,f.c);if(f.y>414)fall.splice(i,1)}
+ requestAnimationFrame(loop)}
+
+// counter
+const cnt=$('#cnt');
+function tick(){let s=Math.max(0,(Date.now()-START_DATE)/1000|0);const d=s/86400|0;s%=86400;const h=s/3600|0;s%=3600;
+ cnt.innerHTML=`<b>${d}</b><small>days</small><b>${h}</b><small>hours</small><b>${s/60|0}</b><small>min</small><b>${s%60}</b><small>sec</small>`}
+tick();setInterval(tick,1000);
+
+// toolbar
+$('#fs').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
+if(!document.documentElement.requestFullscreen)$('#fs').style.display='none'; // iPhone Safari has no fullscreen API
+$('#pz').onclick=e=>{paused=!paused;scene.classList.toggle('paused',paused);e.currentTarget.setAttribute('aria-pressed',paused);
+ e.currentTarget.setAttribute('aria-label',paused?'Resume animations':'Pause animations');
+ $('#pzi').innerHTML=paused?'<path d="M7 5l12 7-12 7z"/>':'<rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/>'};
+
+// carousel
+function cat(x,y,f){return `<g transform="translate(${x} ${y})" stroke="#d8c6c6" stroke-width=".7"><path d="M-18-8L-16-26L-4-17ZM18-8L16-26L4-17Z" fill="${f}"/><circle r="20" fill="${f}"/><g stroke="none"><circle cx="-7" cy="-2" r="2" fill="#333"/><circle cx="7" cy="-2" r="2" fill="#333"/><ellipse cx="-12" cy="5" rx="3.5" ry="2" fill="#ff9aa8" opacity=".7"/><ellipse cx="12" cy="5" rx="3.5" ry="2" fill="#ff9aa8" opacity=".7"/></g><path d="M-3 4q3 3 6 0" stroke="#333" fill="none" stroke-width="1.2"/></g>`}
+const PAL=[['#fff1f4','#fff','#9aa0a6'],['#fff','#c98a5e','#fff'],['#ffe3ea','#fff','#fff'],['#fdf3e7','#9aa0a6','#fff'],['#ffd9e2','#c98a5e','#9aa0a6']];
+const ring=$('#ring');
+PAL.forEach((p,i)=>{const c=document.createElement('div');c.className='card';c.style.transform=`rotateY(${i*72}deg) translateZ(110px)`;
+ c.innerHTML=`<svg viewBox="0 0 100 150" role="img" aria-label="Illustration of two cats in love"><rect width="100" height="150" fill="${p[0]}"/><use href="#h" x="42" y="22" width="16" height="14" style="color:#e8244a"/>${cat(34,92,p[1])}${cat(66,98,p[2])}</svg>`;ring.appendChild(c)});
+let idx=0,spin;
+const step=d=>{idx+=d;ring.style.transform=`translateZ(-110px) rotateY(${-idx*72}deg)`};
+$('#stage').onclick=()=>step(1);
+
+// letter modal
+const modal=$('#modal'),typed=$('#typed');let typing=0;
+function open(){modal.classList.add('open');modal.setAttribute('aria-hidden','false');$('#close').focus();
+ const id=++typing;typed.textContent='';let i=0;
+ (function go(){if(id!==typing)return;if(paused){setTimeout(go,100);return}
+  typed.textContent=LETTER.slice(0,++i);if(i<LETTER.length)setTimeout(go,RM?2:28)})();
+ spin=setInterval(()=>{if(!paused)step(1)},2600)}
+function close(){typing++;clearInterval(spin);modal.classList.remove('open');modal.setAttribute('aria-hidden','true');$('#letter').focus()}
+$('#letter').onclick=open;$('#close').onclick=close;
+modal.onclick=e=>{if(e.target===modal)close()};
+addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open'))close()});
+</script>
+</body>
+</html>
